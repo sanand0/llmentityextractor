@@ -35,7 +35,7 @@ A minimal CloudFlare Worker API that extracts specified entities from text using
 5. Test:
 
    ```bash
-   curl -X POST http://llmentityextractor.sanand0.workers.dev/extract \
+   curl -X POST https://llmentityextractor.sanand.workers.dev/extract \
      -H "Content-Type: application/json" \
      -d '{"entities": ["name", "age", "location"], "input": "John Doe is 28 years old and lives in New York."}'
    ```
@@ -45,7 +45,7 @@ A minimal CloudFlare Worker API that extracts specified entities from text using
 The API documentation is available via Swagger UI at:
 
 - Local: http://localhost:8787/
-- Production: https://llmentityextractor.sanand0.workers.dev/
+- Production: https://llmentityextractor.sanand.workers.dev/
 
 You can also access the raw OpenAPI specification at `/openapi.json`.
 
