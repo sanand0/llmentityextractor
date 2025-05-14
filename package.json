@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "API that extracts entities using GPT 4.1 mini",
   "main": "src/index.js",
+  "prettier": {
+    "printWidth": 120
+  },
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy"

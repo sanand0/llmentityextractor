@@ -1,0 +1,193 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Entity Extraction API",
+    "description": "A Cloudflare Worker API that extracts specified entities from text using LLM technology.\n\n## Overview\n\nThis API allows you to extract structured information from unstructured text. It uses a large language model (LLM) to identify and extract specific entities that you specify in your request.\n\n## How It Works\n\n1. You send a POST request to the `/extract` endpoint with:\n   - A list of entities you want to extract\n   - The input text to analyze\n\n2. The API processes your request by:\n   - Validating your input\n   - Creating a specialized prompt for the LLM\n   - Sending the prompt to the LLM API\n   - Parsing the response into structured JSON\n\n3. You receive a JSON response containing the extracted entities\n\n## Use Cases\n\n- Extract contact information from emails or documents\n- Parse structured data from customer feedback\n- Extract key information from product descriptions\n- Analyze resumes for specific qualifications\n- Extract event details from announcements",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support"
+    }
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Current server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "extraction",
+      "description": "Entity extraction operations"
+    }
+  ],
+  "paths": {
+    "/extract": {
+      "post": {
+        "tags": ["extraction"],
+        "summary": "Extract entities from text",
+        "description": "Extracts specified entities from the input text using LLM technology",
+        "operationId": "extractEntities",
+        "requestBody": {
+          "description": "Extraction request parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExtractionRequest"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "Basic extraction example",
+                  "value": {
+                    "entities": ["name", "age", "location"],
+                    "input": "John Doe is 28 years old and lives in New York."
+                  }
+                },
+                "contact": {
+                  "summary": "Contact information extraction",
+                  "value": {
+                    "entities": ["name", "email", "phone", "company"],
+                    "input": "My name is Jane Smith. You can reach me at jane.smith@example.com or call me at (555) 123-4567. I work at Acme Corporation."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful extraction",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtractionResponse"
+                },
+                "examples": {
+                  "basic": {
+                    "summary": "Basic extraction response",
+                    "value": {
+                      "name": "John Doe",
+                      "age": "28",
+                      "location": "New York"
+                    }
+                  },
+                  "contact": {
+                    "summary": "Contact information response",
+                    "value": {
+                      "name": "Jane Smith",
+                      "email": "jane.smith@example.com",
+                      "phone": "(555) 123-4567",
+                      "company": "Acme Corporation"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Invalid request body. Expected 'entities' array and 'input' string."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/docs": {
+      "get": {
+        "tags": ["documentation"],
+        "summary": "API Documentation",
+        "description": "Serves the Swagger UI documentation for the API",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ExtractionRequest": {
+        "type": "object",
+        "required": ["entities", "input"],
+        "properties": {
+          "entities": {
+            "type": "array",
+            "description": "List of entities to extract from the input text",
+            "items": {
+              "type": "string"
+            },
+            "example": ["name", "age", "location"]
+          },
+          "input": {
+            "type": "string",
+            "description": "The text to extract entities from",
+            "example": "John Doe is 28 years old and lives in New York."
+          }
+        }
+      },
+      "ExtractionResponse": {
+        "type": "object",
+        "description": "Extracted entities from the input text. Each key corresponds to a requested entity. If an entity couldn't be found, its value will be null.",
+        "additionalProperties": {
+          "type": ["string", "null"]
+        },
+        "example": {
+          "name": "John Doe",
+          "age": "28",
+          "location": "New York"
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "API key authentication. Format: `Bearer YOUR_TOKEN`"
+      }
+    }
+  }
+}
