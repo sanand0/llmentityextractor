@@ -1,7 +1,6 @@
 // Import OpenAPI spec and Swagger UI HTML
 import openApiSpec from "./openapi.json";
 import swaggerHtml from "./swagger.html";
-console.log(openApiSpec);
 
 export default {
   async fetch(request, env, ctx) {
@@ -15,15 +14,11 @@ export default {
 
     // Serve OpenAPI spec
     if (request.method === "GET" && url.pathname === "/openapi.json")
-      return new Response(openApiSpec, {
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(openApiSpec, { headers: { "Content-Type": "application/json" } });
 
     // Serve Swagger UI
     if (request.method === "GET" && (url.pathname === "/docs" || url.pathname === "/"))
-      return new Response(swaggerHtml, {
-        headers: { "Content-Type": "text/html" },
-      });
+      return new Response(swaggerHtml, { headers: { "Content-Type": "text/html" } });
 
     // Return 404 for all other routes
     return new Response("Not Found", { status: 404 });

@@ -6,36 +6,46 @@ A minimal CloudFlare Worker API that extracts specified entities from text using
 
 1. Install dependencies:
 
-```
-npm install
-```
+   ```bash
+   npm install
+   ```
 
-2. Configure environment variables:
+2. Create a `.dev.vars` file in the project root with an [LLM Foundry token](https://llmfoundry.straive.com/code).
 
-   - For local development, create a `.dev.vars` file in the project root with:
-     ```
-     LLMFOUNDRY_TOKEN=your_api_token_here
-     ```
-   - For production, set the `LLMFOUNDRY_TOKEN` in the Cloudflare dashboard
+   ```ini
+   LLMFOUNDRY_TOKEN=...
+   ```
 
 3. Run locally:
 
-```
-npm run dev
-```
+   ```bash
+   npm run dev
+   ```
 
-4. Deploy:
+4. Deploy to Cloudflare:
 
-```
-npm run deploy
-```
+   ```bash
+   # Add secrets to production -- one-time
+   npx wrangler secret put LLMFOUNDRY_TOKEN
+
+   # Deploy
+   npm run deploy
+   ```
+
+5. Test:
+
+   ```bash
+   curl -X POST http://llmentityextractor.sanand0.workers.dev/extract \
+     -H "Content-Type: application/json" \
+     -d '{"entities": ["name", "age", "location"], "input": "John Doe is 28 years old and lives in New York."}'
+   ```
 
 ## API Documentation
 
 The API documentation is available via Swagger UI at:
 
-- Local: http://localhost:8787/docs
-- Production: https://[your-worker-subdomain].workers.dev/docs
+- Local: http://localhost:8787/
+- Production: https://llmentityextractor.sanand0.workers.dev/
 
 You can also access the raw OpenAPI specification at `/openapi.json`.
 
@@ -133,5 +143,3 @@ You can also use tools like Postman or Insomnia with the following details:
 - Headers:
   - `Content-Type: application/json`
 - Body (JSON): Use any of the example payloads above
-
-**Note:** The `LLMFOUNDRY_TOKEN` is automatically used from your `.dev.vars` file when running locally.
